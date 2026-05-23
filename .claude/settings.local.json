@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx prisma *)",
+      "Bash(npx tsx *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(Start-Sleep -Seconds 8)",
+      "Bash(Get-Content \"C:\\\\Users\\\\Cliente\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-Cliente-Desktop-Claude-SAAS-DE-MERCADORIA\\\\e112dfed-0cd4-4fa6-ab57-db7707da158f\\\\tasks\\\\ba2lxygcv.output\")",
+      "Bash(Select-Object -Last 15)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\Cliente\\\\Desktop\\\\Claude\\\\SAAS DE MERCADORIA\\\\next.config.ts\")",
+      "Bash(cd \"C:\\\\Users\\\\Cliente\\\\Desktop\\\\Claude\\\\SAAS DE MERCADORIA\" && npm run dev > /tmp/nextjs.log 2>&1 & *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/registro)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/dashboard)",
+      "Bash(curl -s http://localhost:3001/api/products)",
+      "Bash(sqlite3 prisma/dev.db \"SELECT id, name, email, company FROM User;\")",
+      "Bash(node -e ' *)",
+      "Bash(curl -s -X POST http://localhost:3001/api/auth/callback/credentials -H 'Content-Type: application/json' -c /tmp/cookies.txt -b /tmp/cookies.txt)",
+      "Bash(curl -s http://localhost:3001/api/auth/csrf -c /tmp/cookies.txt)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3002/login)",
+      "Bash(curl -s http://localhost:3002/api/auth/csrf)",
+      "Bash(pkill -9 -f \"next\")",
+      "Bash(pkill -9 -f \"node\")",
+      "Bash(DATABASE_URL=\"postgresql://dummy:dummy@localhost:5432/dummy\" DIRECT_URL=\"postgresql://dummy:dummy@localhost:5432/dummy\" npx prisma generate)",
+      "Bash(git add *)",
+      "Bash(git status *)",
+      "Bash(git init *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
