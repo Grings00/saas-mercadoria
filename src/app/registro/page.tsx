@@ -38,7 +38,7 @@ export default function RegisterPage() {
 
     if (!res.ok) {
       const err = await res.json();
-      setServerError(err.error || "Erro ao criar conta");
+      setServerError(err.detail || err.error || "Erro ao criar conta");
       return;
     }
 
