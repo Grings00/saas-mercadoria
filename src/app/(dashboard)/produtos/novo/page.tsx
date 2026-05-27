@@ -33,7 +33,12 @@ export default function NewProductPage() {
       const formData = new FormData();
       formData.append("file", imageFile);
       formData.append("productId", product.id);
-      await fetch("/api/upload", { method: "POST", body: formData });
+      const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+      if (!uploadRes.ok) {
+        const uploadErr = await uploadRes.json().catch(() => ({}));
+        setError(`Produto salvo, mas erro ao enviar imagem: ${uploadErr.error || "Tente novamente."}`);
+        return;
+      }
     }
 
     router.push("/produtos?saved=1");

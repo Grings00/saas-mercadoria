@@ -71,6 +71,10 @@ export default function EditProductPage() {
       if (uploadRes.ok) {
         const { imageUrl } = await uploadRes.json();
         setProduct((prev) => prev ? { ...prev, imageUrl } : prev);
+      } else {
+        const uploadErr = await uploadRes.json().catch(() => ({}));
+        setStatus({ type: "error", msg: `Produto salvo, mas erro ao enviar imagem: ${uploadErr.error || "Tente novamente."}` });
+        return;
       }
     }
 
