@@ -9,16 +9,30 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(cuid())
-  name       String
-  email      String     @unique
-  password   String
-  company    String?
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  categories Category[]
-  products   Product[]
-  movements  Movement[]
+  id            String        @id @default(cuid())
+  name          String
+  email         String        @unique
+  password      String
+  company       String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  categories    Category[]
+  products      Product[]
+  movements     Movement[]
+  responsibles  Responsible[]
+}
+
+model Responsible {
+  id        String     @id @default(cuid())
+  name      String
+  role      String?
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movements Movement[]
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+
+  @@index([userId])
 }
 
 model Category {
@@ -55,15 +69,17 @@ model Product {
 }
 
 model Movement {
-  id         String   @id @default(cuid())
-  type       String
-  quantity   Int
-  unitPrice  Float    @default(0)
-  totalValue Float    @default(0)
-  notes      String?
-  productId  String
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
+  id            String       @id @default(cuid())
+  type          String
+  quantity      Int
+  unitPrice     Float        @default(0)
+  totalValue    Float        @default(0)
+  notes         String?
+  productId     String
+  product       Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  responsibleId String?
+  responsible   Responsible? @relation(fields: [responsibleId], references: [id], onDelete: SetNull)
+  createdAt     DateTime     @default(now())
 }

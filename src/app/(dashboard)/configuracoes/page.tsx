@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, User, Lock, Building2, CheckCircle2 } from "lucide-react";
+import { ResponsiblesSection } from "@/components/settings/ResponsiblesSection";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Nome deve ter ao menos 2 caracteres"),
@@ -157,6 +158,9 @@ export default function ConfiguracoesPage() {
           </button>
         </form>
       </div>
+
+      {/* Responsáveis */}
+      <ResponsiblesSection />
 
       {/* Password */}
       <div className="card p-5">

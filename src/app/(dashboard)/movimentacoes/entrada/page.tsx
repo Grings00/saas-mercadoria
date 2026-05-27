@@ -4,19 +4,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { ChevronLeft, TrendingUp, CheckCircle2, AlertCircle } from "lucide-react";
-import { MovementForm } from "@/components/movements/MovementForm";
+import { MovementForm, MovementFormData } from "@/components/movements/MovementForm";
 
 export default function EntradaPage() {
   const router = useRouter();
   const [status, setStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
 
-  async function handleSubmit(data: {
-    productId: string;
-    quantity: number;
-    unitPrice: number;
-    notes?: string;
-    type: string;
-  }) {
+  async function handleSubmit(data: MovementFormData) {
     setStatus(null);
     const res = await fetch("/api/movements", {
       method: "POST",

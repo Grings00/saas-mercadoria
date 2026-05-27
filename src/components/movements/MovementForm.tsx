@@ -1,21 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Search } from "lucide-react";
+import { Loader2, Search, UserCheck } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
-const schema = z.object({
-  productId: z.string().min(1, "Selecione um produto"),
-  quantity: z.coerce.number().int().min(1, "Quantidade deve ser ao menos 1"),
-  unitPrice: z.coerce.number().min(0).default(0),
-  notes: z.string().optional(),
-});
-
-type Form = z.infer<typeof schema>;
+function buildSchema(type: "ENTRADA" | "SAIDA") {
+  return z.object({
+    productId: z.string().min(1, "Selecione um produto"),
+    quantity: z.coerce.number().int().min(1, "Quantidade deve ser ao menos 1"),
+    unitPrice: z.coerce.number().min(0).default(0),
+    notes: z.string().optional(),
+    responsibleId:
+      type === "SAIDA"
+        ? z.string().min(1, "Selecione o responsável pela saída")
+        : z.string().optional(),
+  });
+}
 
 interface Product {
   id: string;
@@ -27,11 +32,18 @@ interface Product {
   category: { name: string } | null;
 }
 
+interface Responsible {
+  id: string;
+  name: string;
+  role: string | null;
+}
+
 export interface MovementFormData {
   productId: string;
   quantity: number;
   unitPrice: number;
   notes?: string;
+  responsibleId?: string;
   type: string;
 }
 
@@ -42,9 +54,13 @@ interface MovementFormProps {
 
 export function MovementForm({ type, onSubmit }: MovementFormProps) {
   const [products, setProducts] = useState<Product[]>([]);
+  const [responsibles, setResponsibles] = useState<Responsible[]>([]);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Product | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+
+  type Form = z.infer<ReturnType<typeof buildSchema>>;
+  const schema = buildSchema(type);
 
   const {
     register,
@@ -67,6 +83,13 @@ export function MovementForm({ type, onSubmit }: MovementFormProps) {
     }, 200);
     return () => clearTimeout(t);
   }, [search]);
+
+  useEffect(() => {
+    if (type !== "SAIDA") return;
+    fetch("/api/responsibles")
+      .then((r) => r.json())
+      .then(setResponsibles);
+  }, [type]);
 
   function selectProduct(p: Product) {
     setSelected(p);
@@ -191,6 +214,36 @@ export function MovementForm({ type, onSubmit }: MovementFormProps) {
         </div>
       </div>
 
+      {/* Responsável — só na saída */}
+      {type === "SAIDA" && (
+        <div>
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <UserCheck className="w-3.5 h-3.5 text-slate-400" />
+            <label className="text-sm font-medium text-slate-700">Responsável pela saída *</label>
+          </div>
+          {responsibles.length === 0 ? (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 text-sm text-amber-800">
+              Nenhum responsável cadastrado.{" "}
+              <Link href="/configuracoes" className="underline font-medium">
+                Cadastrar em Configurações
+              </Link>
+            </div>
+          ) : (
+            <select {...register("responsibleId")} className="input" defaultValue="">
+              <option value="" disabled>Selecione o responsável...</option>
+              {responsibles.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.name}{r.role ? ` — ${r.role}` : ""}
+                </option>
+              ))}
+            </select>
+          )}
+          {errors.responsibleId && (
+            <p className="text-xs text-red-500 mt-1">{errors.responsibleId.message as string}</p>
+          )}
+        </div>
+      )}
+
       {/* Total preview */}
       {total > 0 && (
         <div className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 flex items-center justify-between">
@@ -208,7 +261,11 @@ export function MovementForm({ type, onSubmit }: MovementFormProps) {
         />
       </div>
 
-      <button type="submit" disabled={isSubmitting} className="btn-primary w-full justify-center">
+      <button
+        type="submit"
+        disabled={isSubmitting || (type === "SAIDA" && responsibles.length === 0)}
+        className="btn-primary w-full justify-center"
+      >
         {isSubmitting ? (
           <><Loader2 className="w-4 h-4 animate-spin" /> Registrando...</>
         ) : (

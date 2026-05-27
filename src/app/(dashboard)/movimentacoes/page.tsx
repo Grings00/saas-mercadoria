@@ -15,6 +15,7 @@ interface Movement {
   notes: string | null;
   createdAt: string;
   product: { id: string; name: string; unit: string };
+  responsible: { id: string; name: string; role: string | null } | null;
 }
 
 export default function MovementsPage() {
@@ -106,6 +107,7 @@ export default function MovementsPage() {
                   <tr className="border-b border-slate-100 bg-slate-50/50">
                     <th className="text-left px-4 py-3 font-medium text-slate-500">Tipo</th>
                     <th className="text-left px-4 py-3 font-medium text-slate-500">Produto</th>
+                    <th className="text-left px-4 py-3 font-medium text-slate-500 hidden lg:table-cell">Responsável</th>
                     <th className="text-right px-4 py-3 font-medium text-slate-500">Qtd</th>
                     <th className="text-right px-4 py-3 font-medium text-slate-500 hidden sm:table-cell">Valor Unit.</th>
                     <th className="text-right px-4 py-3 font-medium text-slate-500">Total</th>
@@ -132,6 +134,24 @@ export default function MovementsPage() {
                       <td className="px-4 py-3">
                         <p className="font-medium text-slate-900">{m.product.name}</p>
                         {m.notes && <p className="text-xs text-slate-400 truncate max-w-[200px]">{m.notes}</p>}
+                        {m.responsible && (
+                          <p className="text-xs text-slate-400 lg:hidden truncate max-w-[200px]">
+                            por {m.responsible.name}
+                            {m.responsible.role ? ` (${m.responsible.role})` : ""}
+                          </p>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 hidden lg:table-cell">
+                        {m.responsible ? (
+                          <>
+                            <p className="text-sm text-slate-700">{m.responsible.name}</p>
+                            {m.responsible.role && (
+                              <p className="text-xs text-slate-400">{m.responsible.role}</p>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-slate-300 text-sm">—</span>
+                        )}
                       </td>
                       <td className="px-4 py-3 text-right font-medium text-slate-900">
                         {m.quantity} {m.product.unit}
