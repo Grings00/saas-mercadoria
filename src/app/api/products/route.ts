@@ -9,7 +9,7 @@ const productSchema = z.object({
   description: z.string().optional(),
   sku: z.string().optional(),
   barcode: z.string().optional(),
-  categoryId: z.string().optional(),
+  categoryId: z.string().optional().transform((v) => v === "" ? undefined : v),
   costPrice: z.number().min(0),
   salePrice: z.number().min(0),
   stock: z.number().int().min(0),
